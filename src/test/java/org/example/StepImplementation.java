@@ -14,6 +14,7 @@ import pages.OpenPositionsPage;
 import pages.ViewJobPage;
 import pages.ApplicationFormPage;
 import utils.ElementUtils;
+import utils.ElementUtils.WaitTime;
 import utils.ScrollUtils;
 import com.thoughtworks.gauge.Logger;
 
@@ -111,11 +112,11 @@ public class StepImplementation {
     public void hoverCompanyMenuAndClickCareers() {
         WebElement companyLabelItem = mainPage.waitVisible(mainPage.companyLabel);
         ElementUtils.hoverElement(driver, companyLabelItem);
-        ElementUtils.waitFor(1000);
+        ElementUtils.waitFor(WaitTime.MEDIUM);
         
         mainPage.waitClickable(mainPage.careersLabel);
         mainPage.click(mainPage.careersLabel);
-        ElementUtils.waitFor(2000);
+        ElementUtils.waitFor(WaitTime.LONG);
         
         String currentUrl = mainPage.getCurrentUrl();
         Assertions.assertThat(currentUrl)
@@ -401,22 +402,22 @@ public class StepImplementation {
             Assertions.fail("Application Form Page navigation failed - required form elements not visible: " + e.getMessage());
         }
 
-        ElementUtils.waitFor(3000);
+        ElementUtils.waitFor(WaitTime.VERY_LONG);
         
         WebElement nameInput = wait.until(ExpectedConditions.elementToBeClickable(applicationFormPage.nameInput));
         ElementUtils.sendKeysWithActions(driver, nameInput, "Yağız YILDIRIM");
-        ElementUtils.waitFor(1000);
+        ElementUtils.waitFor(WaitTime.MEDIUM);
         
         WebElement emailInput = wait.until(ExpectedConditions.elementToBeClickable(applicationFormPage.emailInput));
         ElementUtils.sendKeysWithActions(driver, emailInput, "yagizyildirim@yandex.com");
-        ElementUtils.waitFor(1000);
+        ElementUtils.waitFor(WaitTime.MEDIUM);
         
         WebElement linkedinInput = wait.until(ExpectedConditions.elementToBeClickable(applicationFormPage.linkedinInput));
         ElementUtils.sendKeysWithActions(driver, linkedinInput, "@https://www.linkedin.com/in/yagizyildirim/");
-        ElementUtils.waitFor(1000);
+        ElementUtils.waitFor(WaitTime.MEDIUM);
         
         WebElement coverLetterTextArea = wait.until(ExpectedConditions.presenceOfElementLocated(applicationFormPage.coverLetterTextArea));
         ElementUtils.clearAndSendKeys(driver, coverLetterTextArea, "HIRE ME! =)");
-        ElementUtils.waitFor(3000);
+        ElementUtils.waitFor(WaitTime.VERY_LONG);
     }
 }

@@ -4,45 +4,49 @@ import com.thoughtworks.gauge.AfterScenario;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import utils.ConfigReader;
 
-/** WebDriver factory resolving browser from env/system and managing lifecycle. */
+/** WebDriver factory resolving browser from config/env/system and managing lifecycle. */
 public class DriverFactory {
     private static WebDriver driver;
 
     public static String browser = System.getenv("BROWSER") != null
             ? System.getenv("BROWSER")
-            : System.getProperty("browser", "chrome"); // default: chrome
+            : System.getProperty("browser", ConfigReader.getProperty("default.browser", "chrome"));
 
     public static WebDriver getDriver() {
         if (driver == null) {
             switch (browser.toLowerCase()) {
                 case "firefox":
-                    System.setProperty("webdriver.gecko.driver", "drivers/geckodriver.exe");
+                    String geckoDriverPath = ConfigReader.getProperty("webdriver.firefox.driver", "drivers/geckodriver.exe");
+                    System.setProperty("webdriver.gecko.driver", geckoDriverPath);
+                    
                     FirefoxOptions firefoxOptions = new FirefoxOptions();
-                    firefoxOptions.setBinary("C:\\Program Files\\Mozilla Firefox\\firefox.exe");
+                    
+                    String firefoxBinary = ConfigReader.getProperty("browser.firefox.binary");
+                    if (firefoxBinary != null && !firefoxBinary.isEmpty()) {
+                        firefoxOptions.setBinary(firefoxBinary);
+                    }
+                    
                     firefoxOptions.addArguments("--kiosk");
                     firefoxOptions.addArguments("--disable-notifications");
                     driver = new FirefoxDriver(firefoxOptions);
                     break;
 
-                // Edge WebDriver version does not match current Edge; keep disabled until updated.
-                    /*case "edge":
-                    System.setProperty("webdriver.edge.driver", "drivers/msedgedriver.exe");
-                    EdgeOptions edgeOptions = new EdgeOptions();
-                    edgeOptions.setBinary("C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe");
-                    edgeOptions.addArguments("--start-maximized");
-                    edgeOptions.addArguments("--disable-notifications");
-                    driver = new EdgeDriver(edgeOptions);
-                    break;*/
-
                 case "chrome":
                 default:
-                    System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
+                    String chromeDriverPath = ConfigReader.getProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
+                    System.setProperty("webdriver.chrome.driver", chromeDriverPath);
+                    
                     ChromeOptions chromeOptions = new ChromeOptions();
+                    
+                    String chromeBinary = ConfigReader.getProperty("browser.chrome.binary");
+                    if (chromeBinary != null && !chromeBinary.isEmpty()) {
+                        chromeOptions.setBinary(chromeBinary);
+                    }
+                    
                     chromeOptions.addArguments("--start-maximized");
                     chromeOptions.addArguments("--disable-notifications");
                     driver = new ChromeDriver(chromeOptions);

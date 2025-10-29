@@ -15,6 +15,31 @@ import com.thoughtworks.gauge.Logger;
 
 /** Common element helpers for waits, scroll, hover, and safe click. */
 public final class ElementUtils {
+    
+    /** Common wait durations for better readability and consistency. */
+    public enum WaitTime {
+        VERY_SHORT(200, "Element stability check"),
+        SHORT(500, "Quick action response"),
+        MEDIUM(1000, "Standard action wait"),
+        LONG(2000, "Page element rendering"),
+        VERY_LONG(3000, "Complex form or AJAX");
+
+        private final int milliseconds;
+        private final String description;
+
+        WaitTime(int milliseconds, String description) {
+            this.milliseconds = milliseconds;
+            this.description = description;
+        }
+
+        public int getMilliseconds() {
+            return milliseconds;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
     private static boolean SLOW_MODE = true;         // enable/disable slow-mode pacing
     private static int HUMAN_MIN_MS = 500;           // min pause after actions
     private static int HUMAN_MAX_MS = 1000;           // max pause after actions
@@ -234,6 +259,11 @@ public final class ElementUtils {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    /** Wait using predefined WaitTime enum for better readability. */
+    public static void waitFor(WaitTime waitTime) {
+        waitFor(waitTime.getMilliseconds());
     }
 
     /* ----------------- internal helpers ----------------- */
