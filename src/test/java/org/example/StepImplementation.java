@@ -47,19 +47,9 @@ public class StepImplementation {
     }
     private static boolean cookieHandled = false;
 
-    // If you want the URL dynamic
-    /*@Step("Go to <url> Website")
-    public void setSiteURL(String url) throws InterruptedException {
-        driver.get(url);
-        String currentUrl = driver.getCurrentUrl();
-        Assertions.assertThat(currentUrl)
-                .as("Navigation failed! URL could be corrupt or Website isn't up!" + currentUrl)
-                .contains("useinsider");
-    }*/
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
     /** Open Insider homepage and verify basic URL contains 'useinsider'. */
     @Step("Go to Insider Website")
-    public void goToInsiderWebsite()throws InterruptedException{
+    public void goToInsiderWebsite() {
         Logger.info("Go to Insider Home Page");
         mainPage.openPageByUrl(mainPage.insiderHomePageUrl);
         String currentUrl = mainPage.getCurrentUrl();
@@ -67,37 +57,34 @@ public class StepImplementation {
                 .as("Navigation failed! URL could be corrupt or Website isn't up!" + currentUrl)
                 .contains("useinsider");
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Validate homepage is rendered by checking logo and footer label. */
     @Step("Confirm the Website is correct")
-    public void confirmTheWebsiteCorrectAndUp () throws InterruptedException{
-        // Verify Insider logo exists
+    public void confirmTheWebsiteCorrectAndUp() {
         WebElement checkLogoExist = mainPage.waitVisible(mainPage.insiderLogo);
-        // If verification fails, message will appear in the test report
-        Assertions.assertThat(checkLogoExist.isDisplayed()).as("Failed about verifying the Insider Website").isTrue();
-        // Verify footer AI-native label exists
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+        Assertions.assertThat(checkLogoExist.isDisplayed())
+                .as("Failed about verifying the Insider Website").isTrue();
+        
+        ElementUtils.scrollToBottom(driver);
         ElementUtils.waitFor(2000);
+        
         WebElement insiderRightsLabelExist = mainPage.waitVisible(mainPage.aiNativeLabel);
-        Assertions.assertThat(insiderRightsLabelExist.isDisplayed()).as("Insider Ai Native Label Doesn't Exist on Footer").isTrue();
-
+        Assertions.assertThat(insiderRightsLabelExist.isDisplayed())
+                .as("Insider Ai Native Label Doesn't Exist on Footer").isTrue();
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** If cookie banner is present, accept it. Runs once per execution. */
     @Step("Check the Cookie is exist, if yes Click Accept Button, if isn't continue to the next step")
-    public void clickCookieAcceptButtonIfItsDisplayed (){
+    public void clickCookieAcceptButtonIfItsDisplayed() {
         Logger.info("Cookie step triggered @clickCookieAcceptButtonIfItsDisplayed");
         if (cookieHandled) {
             Logger.info("Cookie was already handled earlier. Skipping this step.");
             return;
         }
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
         try {
-            // Check if cookie pop-up exists in DOM
             java.util.List<WebElement> cookies = driver.findElements(mainPage.cookieAcceptButton);
             if (cookies.isEmpty()) {
                 Logger.info("No cookie popup found on this page.");
@@ -111,51 +98,34 @@ public class StepImplementation {
             js.executeScript("arguments[0].click();", cookieAcceptButton);
             Logger.info("Cookie popup accepted successfully.");
 
-            // Short stabilization after cookie action
             ElementUtils.waitFor(500);
-
-            // Ensure cookie handling runs only once
             cookieHandled = true;
 
         } catch (Exception e) {
             Logger.info("Cookie popup could not be handled safely: " + e.getMessage());
         }
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Hover 'Company' menu, click 'Careers', and assert we land on careers URL. */
     @Step("Hover Company Menu and Click Careers and Verify Navigation to Careers Page")
-    public void hoverCompanyMenuAndClickCareers()throws InterruptedException{
-        WebDriverWait wait = new WebDriverWait(driver , Duration.ofSeconds(10));
+    public void hoverCompanyMenuAndClickCareers() {
         WebElement companyLabelItem = mainPage.waitVisible(mainPage.companyLabel);
-        ElementUtils.moveToElement(driver, companyLabelItem);
+        ElementUtils.hoverElement(driver, companyLabelItem);
         ElementUtils.waitFor(1000);
-        try {
-            mainPage.waitClickable(mainPage.careersLabel);
-        } catch (Exception e) {
-            Assertions.fail("'Careers' menu item is NOT clickable!");
-        }
+        
+        mainPage.waitClickable(mainPage.careersLabel);
         mainPage.click(mainPage.careersLabel);
         ElementUtils.waitFor(2000);
+        
         String currentUrl = mainPage.getCurrentUrl();
         Assertions.assertThat(currentUrl)
                 .as("Clicking 'Careers' did NOT redirect to the Careers page!")
-                .contains("careers");
-        Logger.info(currentUrl);
+                .contains(careersPage.careersUrl);
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
-    /*@Step("Verify Navigation to Careers Page")
-    public void verifyNavigationToCareersPage () throws InterruptedException {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        String careersPageCurrentUrl= driver.getCurrentUrl();
-        wait.until(ExpectedConditions.urlContains("careers"));
-        Assertions.assertThat(careersPageCurrentUrl.contains(careersPage.careersUrl)).as("Careers page is not correct!").isTrue();
-        Thread.sleep(2000);
-    }
-     */
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Scroll to and verify 'Team' block is visible on Careers page. */
     @Step("Verify Team Block is Open")
-    public void verifyTeamBlockIsOpen () throws InterruptedException{
+    public void verifyTeamBlockIsOpen() {
         WebElement teamBlock = ScrollUtils.smoothScrollToAndCenter(
                 driver,
                 careersPage.teamBlockElement,
@@ -163,25 +133,27 @@ public class StepImplementation {
                 10
         );
 
-        Assertions.assertThat(teamBlock.isDisplayed()).as("Team Block is not visible after smooth scroll").isTrue();
+        Assertions.assertThat(teamBlock.isDisplayed())
+                .as("Team Block is not visible after smooth scroll").isTrue();
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Scroll to and verify 'Location' block is visible on Careers page. */
     @Step("Verify Location Block is Open")
-    public void verifyLocationBlockIsOpen () throws InterruptedException {
-    WebElement locationBlock = ScrollUtils.smoothScrollToAndCenter(
-            driver,
-            careersPage.locationBlockElement,
-            900,
-            10
-    );
+    public void verifyLocationBlockIsOpen() {
+        WebElement locationBlock = ScrollUtils.smoothScrollToAndCenter(
+                driver,
+                careersPage.locationBlockElement,
+                900,
+                10
+        );
 
-        Assertions.assertThat(locationBlock.isDisplayed()).as("Location Block is not visible after smooth scroll").isTrue();
+        Assertions.assertThat(locationBlock.isDisplayed())
+                .as("Location Block is not visible after smooth scroll").isTrue();
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Scroll to and verify 'Life at Insider' block is visible on Careers page. */
     @Step("Verify Life At Insider Block is Open")
-    public void verifyLifeAtInsiderBlockIsOpen () throws InterruptedException {
+    public void verifyLifeAtInsiderBlockIsOpen() {
         WebElement lifeAtInsiderBlock = ScrollUtils.smoothScrollToAndCenter(
                 driver,
                 careersPage.lifeAtInsiderBlockElement,
@@ -189,19 +161,20 @@ public class StepImplementation {
                 10
         );
 
-        Assertions.assertThat(lifeAtInsiderBlock.isDisplayed()).as("Life At Insider is not visible after smooth scroll").isTrue();
+        Assertions.assertThat(lifeAtInsiderBlock.isDisplayed())
+                .as("Life At Insider is not visible after smooth scroll").isTrue();
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Utility wait step for a given number of seconds. */
     @Step("Wait <seconds> seconds")
-    public void waitTwoSeconds (int seconds) throws InterruptedException{
+    public void waitTwoSeconds(int seconds) {
         Logger.info(seconds + " seconds waiting");
         ElementUtils.waitFor(seconds * 1000);
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Navigate directly to the QA careers landing page and verify URL. */
     @Step("Go to Career Quality Assurance Page")
-    public void goToCareerQualityAssurancePage () throws InterruptedException{
+    public void goToCareerQualityAssurancePage() {
         Logger.info("Opening Career Quality Assurance Page...");
         careerQualityAssurancePage.openPageByUrl(careerQualityAssurancePage.careerQualityAssurancePageUrl);
         String currentUrl = careerQualityAssurancePage.getCurrentUrl();
@@ -209,10 +182,10 @@ public class StepImplementation {
                 .as("Navigation failed! URL could be corrupt or Website isn't up!" + currentUrl)
                 .contains("quality-assurance");
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Click 'See all QA jobs' and verify we land on Open Positions page. */
     @Step("Click See All Jobs Button and Verify Navigation")
-    public void clickSeeAllJobsButton () throws InterruptedException{
+    public void clickSeeAllJobsButton() {
         Logger.info("Clicking See All Jobs Button...");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
@@ -224,53 +197,53 @@ public class StepImplementation {
         ElementUtils.waitFor(1000);
         wait.until(ExpectedConditions.urlContains("qualityassurance"));
         String currentUrl = openPositionsPage.getCurrentUrl();
-        Assertions.assertThat(currentUrl).as("URLs are not matched").contains(openPositionsPage.openPositionsPageUrl);
+        Assertions.assertThat(currentUrl)
+                .as("URLs are not matched").contains(openPositionsPage.openPositionsPageUrl);
         ElementUtils.waitFor(1000);
         Logger.info("STEP: See All Jobs end");
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
-    /*@Step("Verify See All Jobs Button Navigation")
-    public void verifySeeAllJobsButtonNavigation () throws InterruptedException{
-        System.out.println("STEP: See All Jobs start");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.urlContains("qualityassurance"));
-        String currentUrl = driver.getCurrentUrl();
-        Assertions.assertThat(currentUrl).as("URLs are not matched").contains(openPositionsPage.openPositionsPageUrl);
-        Thread.sleep(1000);
-        System.out.println("STEP: See All Jobs end");
-    }*/
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Filter Open Positions by location: Istanbul, Turkiye. */
     @Step("Select Istanbul, Turkiye on Location Dropdown")
     public void selectIstanbulOnLocationDropdown() {
         Logger.info("STEP: Location start");
         openPositionsPage.waitForAjax(15);
         openPositionsPage.waitForPageReady(15);
-        By ddlButton = openPositionsPage.filterByLocationDropdown;           // button
-        By ddlPanel  = openPositionsPage.locationDropdownContainer;          // panel (e.g., [role='listbox'])
-        By ddlItems  = openPositionsPage.istanbulValue;                      // options (e.g., [role='option'] or .dropdown-item)
+        By ddlButton = openPositionsPage.filterByLocationDropdown;
+        By ddlPanel  = openPositionsPage.locationDropdownContainer;
+        By ddlItems  = openPositionsPage.istanbulValue;
 
-        ElementUtils.selectFromDropdown(driver, ddlButton, ddlPanel, ddlItems,"Istanbul, Turkiye",12);
+        ElementUtils.selectFromDropdown(driver, ddlButton, ddlPanel, ddlItems, "Istanbul, Turkiye", 12);
         Logger.info("STEP: Location end");
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Filter Open Positions by department: Quality Assurance. */
     @Step("Select Quality Assurance on Department Dropdown")
     public void selectQualityAssuranceOnDepartmentDropdown() {
         Logger.info("STEP: Department start");
         openPositionsPage.waitForAjax(15);
         openPositionsPage.waitForPageReady(15);
+        try {
+            String dept = driver.findElement(openPositionsPage.filtredItemDepartment).getText().trim();
+            if (dept.toLowerCase(java.util.Locale.ROOT).contains("quality assurance")) {
+                Logger.info("Department already 'Quality Assurance' (pre-applied by page). Skipping re-select.");
+                return;
+            }
+        } catch (Exception ignored) {
+            // If pill/label doesn't exist, we'll make the selection
+        }
+
+        // 1) Normal selection
         By ddlButton = openPositionsPage.filterByDepartmentDropdown;
         By ddlPanel  = openPositionsPage.departmentDropdownContainer;
-        By ddlItems  = openPositionsPage.departmentValue;                    // filtered options container
-
-        ElementUtils.selectFromDropdown(driver, ddlButton, ddlPanel, ddlItems,"Quality Assurance",12);
+        By ddlItems  = openPositionsPage.departmentValue;
+        ElementUtils.selectFromDropdown(driver, ddlButton, ddlPanel, ddlItems, "Quality Assurance", 12);
         Logger.info("STEP: Department end");
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Assert each listed position includes 'Quality Assurance' and 'Istanbul, Turkiye'. */
     @Step("Verify the List items contain Quality Assurance and Istanbul, Turkiye values")
-    public void verifyListItemContainSelectedValues () throws InterruptedException {
+    public void verifyListItemContainSelectedValues() {
         By listItem = openPositionsPage.filtredListItem;
         java.util.List<WebElement> items = driver.findElements(listItem);
         if (items.isEmpty()) {
@@ -281,22 +254,19 @@ public class StepImplementation {
         org.assertj.core.api.SoftAssertions softly = new org.assertj.core.api.SoftAssertions();
         JavascriptExecutor js = (JavascriptExecutor) driver;
         WebDriverWait smallWait = new WebDriverWait(driver, java.time.Duration.ofSeconds(5));
-        org.openqa.selenium.interactions.Actions actions = new org.openqa.selenium.interactions.Actions(driver);
 
         for (int i = 0; i < items.size(); i++) {
 
-            // ✅ 1) HER TURDA TAZE LİSTE AL (stale çözümü)
+            // 1) Get fresh list each iteration (stale solution)
             java.util.List<WebElement> fresh = driver.findElements(listItem);
-            if (i >= fresh.size()) break; // güvenlik
+            if (i >= fresh.size()) break; // safety check
             WebElement list = fresh.get(i);
 
-            // Center item (JS) + visual hover (Actions)
+            // Center item and hover
             try {
                 js.executeScript("arguments[0].scrollIntoView({block:'center'});", list);
             } catch (Exception ignored) {}
-            try {
-                actions.moveToElement(list).pause(java.time.Duration.ofMillis(200)).perform();
-            } catch (Exception ignored) {}
+            ElementUtils.hoverElement(driver, list, 200);
             ElementUtils.waitFor(300);
 
             // Retry once on stale for relative locators inside item
@@ -306,11 +276,9 @@ public class StepImplementation {
                 department = list.findElement(openPositionsPage.filtredItemDepartment);
                 location   = list.findElement(openPositionsPage.filtredItemLocation);
 
-                // Short Wait
                 smallWait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf(department));
                 smallWait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf(location));
             } catch (org.openqa.selenium.StaleElementReferenceException se) {
-                // DOM recreated
                 fresh = driver.findElements(listItem);
                 if (i >= fresh.size()) break;
                 list = fresh.get(i);
@@ -318,9 +286,7 @@ public class StepImplementation {
                 try {
                     js.executeScript("arguments[0].scrollIntoView({block:'center', inline:'nearest'});", list);
                 } catch (Exception ignored) {}
-                try {
-                    actions.moveToElement(list).pause(java.time.Duration.ofMillis(200)).perform();
-                } catch (Exception ignored) {}
+                ElementUtils.hoverElement(driver, list, 200);
                 ElementUtils.waitFor(300);
 
                 department = list.findElement(openPositionsPage.filtredItemDepartment);
@@ -342,45 +308,36 @@ public class StepImplementation {
         }
         softly.assertAll();
     }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
+
     /** Click 'View Role' and verify redirection to Application Form Page. */
     @Step("Click View Role Button and Verify redirection to Application Form Page")
-    public void clickViewRoleButtonAndVerifyRedirection () throws InterruptedException{
+    public void clickViewRoleButtonAndVerifyRedirection() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement ListItemTitle = wait.until(ExpectedConditions.presenceOfElementLocated(openPositionsPage.filtredListItemJobTitle));
-        ElementUtils.moveToElement(driver, ListItemTitle);
+        ElementUtils.hoverElement(driver, ListItemTitle);
         ElementUtils.waitFor(1000);
-        WebElement viewRoleButton = wait.until(ExpectedConditions.elementToBeClickable(openPositionsPage.viewRoleButton));
-        ElementUtils.moveToElementAndClick(driver, viewRoleButton);
-        ElementUtils.waitFor(1000);
+        
         String beforeClickUrl = driver.getCurrentUrl();
         java.util.Set<String> beforeHandles = driver.getWindowHandles();
+        WebElement viewRoleButton = wait.until(ExpectedConditions.elementToBeClickable(openPositionsPage.viewRoleButton));
+        ElementUtils.clickWithActions(driver, viewRoleButton);
 
-        // Wait for next new page
-        wait.until(d -> d.getWindowHandles().size() > beforeHandles.size() || !d.getCurrentUrl().equals(beforeClickUrl));
+        ElementUtils.waitForNewWindowOrUrlChange(driver, beforeHandles, beforeClickUrl, 10);
 
-        // If new page is up, continue with it
         java.util.Set<String> afterHandles = driver.getWindowHandles();
         if (afterHandles.size() > beforeHandles.size()) {
-            for (String h : afterHandles) {
-                if (!beforeHandles.contains(h)) {
-                    driver.switchTo().window(h);
-                    break;
-                }
-            }
+            ElementUtils.switchToNewWindow(driver, beforeHandles);
         }
         
-        // Wait until page is ready and ajax is finished
         ElementUtils.waitForPageToBeReady(driver, 15);
         ElementUtils.waitForAjaxToFinish(driver, 15);
         
-        // Check 1: If submit button is visible, the navigation is correct
         try {
             WebElement submitButton = ScrollUtils.findElementByScrolling(
                 driver,
                 applicationFormPage.submitButton,
-                400,  // scroll step size (daha küçük)
-                25    // max scroll attempts (daha fazla)
+                500,
+                25
             );
             
             Assertions.assertThat(submitButton.isDisplayed())
@@ -391,50 +348,44 @@ public class StepImplementation {
             Assertions.fail("Application Form Page navigation is not correct: " + e.getMessage());
         }
     }
+
     @Step("BONUS Click View Role Button and Verify redirection to View Role Page")
-    public void clickViewRoleButtonAndVerifyRedirectionViewRolePage() throws InterruptedException{
+    public void clickViewRoleButtonAndVerifyRedirectionViewRolePage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement ListItemTitle = wait.until(ExpectedConditions.presenceOfElementLocated(openPositionsPage.filtredListItemJobTitle));
-        ElementUtils.moveToElement(driver, ListItemTitle);
+        ElementUtils.hoverElement(driver, ListItemTitle);
         ElementUtils.waitFor(1000);
+        
         String beforeClickUrl = driver.getCurrentUrl();
         java.util.Set<String> beforeHandles = driver.getWindowHandles();
         WebElement viewRoleButton = wait.until(ExpectedConditions.elementToBeClickable(openPositionsPage.viewRoleButton));
-        ElementUtils.moveToElementAndClick(driver, viewRoleButton);
-        ElementUtils.waitFor(1000);
-        // Wait for next new page
-        wait.until(d -> d.getWindowHandles().size() > beforeHandles.size() || !d.getCurrentUrl().equals(beforeClickUrl));
+        ElementUtils.clickWithActions(driver, viewRoleButton);
 
-        // If new page is up, continue with it
+        ElementUtils.waitForNewWindowOrUrlChange(driver, beforeHandles, beforeClickUrl, 10);
+
         java.util.Set<String> afterHandles = driver.getWindowHandles();
         if (afterHandles.size() > beforeHandles.size()) {
-            for (String h : afterHandles) {
-                if (!beforeHandles.contains(h)) {
-                    driver.switchTo().window(h);
-                    break;
-                }
-            }
+            ElementUtils.switchToNewWindow(driver, beforeHandles);
         }
 
-        // Wait until page is ready and ajax is finished
         ElementUtils.waitForPageToBeReady(driver, 15);
         ElementUtils.waitForAjaxToFinish(driver, 15);
 
         WebElement applyForThisJobButton = wait.until(ExpectedConditions.visibilityOfElementLocated(viewJobPage.applyForThisJobButton));
-        Assertions.assertThat(applyForThisJobButton.isDisplayed()).as("View Role Page navigation is not correct").isTrue();
-
+        Assertions.assertThat(applyForThisJobButton.isDisplayed())
+                .as("View Role Page navigation is not correct").isTrue();
     }
+
     @Step("BONUS Verify Application Form Page Navigation and Fill the Form")
-    public void verifyApplicationFormPageNavigationAndFillTheForm ()throws InterruptedException{
+    public void verifyApplicationFormPageNavigationAndFillTheForm() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement applyForThisJobButton = wait.until(ExpectedConditions.visibilityOfElementLocated(viewJobPage.applyForThisJobButton));
-        ElementUtils.moveToElementAndClick(driver, applyForThisJobButton);
+        ElementUtils.hoverElement(driver, applyForThisJobButton);
+        ElementUtils.clickWithActions(driver, applyForThisJobButton);
 
-        // Wait until page is ready and ajax is finished
         ElementUtils.waitForPageToBeReady(driver, 15);
         ElementUtils.waitForAjaxToFinish(driver, 15);
 
-        // Check navigation: Verify required form elements are visible
         try {
             WebElement nameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(applicationFormPage.nameInput));
             WebElement emailInput = wait.until(ExpectedConditions.visibilityOfElementLocated(applicationFormPage.emailInput));
@@ -450,32 +401,22 @@ public class StepImplementation {
             Assertions.fail("Application Form Page navigation failed - required form elements not visible: " + e.getMessage());
         }
 
-        // Fill the form
         ElementUtils.waitFor(3000);
         
-        // 1. Fill nameInput
         WebElement nameInput = wait.until(ExpectedConditions.elementToBeClickable(applicationFormPage.nameInput));
-        ElementUtils.moveToElementAndSendKeys(driver, nameInput, "Yağız YILDIRIM");
+        ElementUtils.sendKeysWithActions(driver, nameInput, "Yağız YILDIRIM");
         ElementUtils.waitFor(1000);
         
-        // 2. Fill emailInput
         WebElement emailInput = wait.until(ExpectedConditions.elementToBeClickable(applicationFormPage.emailInput));
-        ElementUtils.moveToElementAndSendKeys(driver, emailInput, "yagizyildirim@yandex.com");
+        ElementUtils.sendKeysWithActions(driver, emailInput, "yagizyildirim@yandex.com");
         ElementUtils.waitFor(1000);
         
-        // 3. Fill linkedinInput
         WebElement linkedinInput = wait.until(ExpectedConditions.elementToBeClickable(applicationFormPage.linkedinInput));
-        ElementUtils.moveToElementAndSendKeys(driver, linkedinInput, "@https://www.linkedin.com/in/yagizyildirim/");
+        ElementUtils.sendKeysWithActions(driver, linkedinInput, "@https://www.linkedin.com/in/yagizyildirim/");
         ElementUtils.waitFor(1000);
         
-        // 4. Fill coverLetterTextArea
         WebElement coverLetterTextArea = wait.until(ExpectedConditions.presenceOfElementLocated(applicationFormPage.coverLetterTextArea));
-        // Scroll to element first
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", coverLetterTextArea);
-        ElementUtils.waitFor(500);
-        // Clear and send keys directly
-        coverLetterTextArea.clear();
-        coverLetterTextArea.sendKeys("HIRE ME! =)");
+        ElementUtils.clearAndSendKeys(driver, coverLetterTextArea, "HIRE ME! =)");
         ElementUtils.waitFor(3000);
     }
 }

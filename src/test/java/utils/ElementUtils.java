@@ -236,67 +236,6 @@ public final class ElementUtils {
         }
     }
 
-    /* ====================== ACTIONS METHODS ====================== */
-
-    /** Move to element using Actions. */
-    public static void moveToElement(WebDriver driver, By locator) {
-        WebElement element = waitVisible(driver, locator, DEFAULT_TIMEOUT_SEC);
-        safeScrollIntoView(driver, element);
-        new Actions(driver).moveToElement(element).perform();
-        humanPause();
-    }
-
-    /** Move to element using Actions. */
-    public static void moveToElement(WebDriver driver, WebElement element) {
-        safeScrollIntoView(driver, element);
-        humanPause();
-        new Actions(driver).moveToElement(element).perform();
-        humanPause();
-    }
-
-    /** Send keys to element using Actions. */
-    public static void sendKeys(WebDriver driver, By locator, String text) {
-        WebElement element = waitClickable(driver, locator, DEFAULT_TIMEOUT_SEC);
-        safeScrollIntoView(driver, element);
-        new Actions(driver).moveToElement(element).click().sendKeys(text).perform();
-        humanPause();
-    }
-
-    /** Send keys to element using Actions. */
-    public static void sendKeys(WebDriver driver, WebElement element, String text) {
-        safeScrollIntoView(driver, element);
-        new Actions(driver).moveToElement(element).click().sendKeys(text).perform();
-        humanPause();
-    }
-
-    /** Move to element and click using Actions. */
-    public static void moveToElementAndClick(WebDriver driver, By locator) {
-        moveToElement(driver, locator);
-        WebElement element = waitClickable(driver, locator, DEFAULT_TIMEOUT_SEC);
-        safeClick(driver, element, true);
-    }
-
-    /** Move to element and click using Actions. */
-    public static void moveToElementAndClick(WebDriver driver, WebElement element) {
-        moveToElement(driver, element);
-        safeClick(driver, element, true);
-    }
-
-    /** Move to element and send keys using Actions. */
-    public static void moveToElementAndSendKeys(WebDriver driver, By locator, String text) {
-        moveToElement(driver, locator);
-        WebElement element = waitClickable(driver, locator, DEFAULT_TIMEOUT_SEC);
-        new Actions(driver).moveToElement(element).click().sendKeys(text).perform();
-        humanPause();
-    }
-
-    /** Move to element and send keys using Actions. */
-    public static void moveToElementAndSendKeys(WebDriver driver, WebElement element, String text) {
-        moveToElement(driver, element);
-        new Actions(driver).moveToElement(element).click().sendKeys(text).perform();
-        humanPause();
-    }
-
     /* ----------------- internal helpers ----------------- */
 
     private static String safeGetText(WebElement el) {
@@ -310,5 +249,88 @@ public final class ElementUtils {
                     "if(arguments[0]) { arguments[0].scrollTop = arguments[0].scrollTop + arguments[1]; }",
                     container, deltaY);
         } catch (Exception ignored) {}
+    }
+
+    /* ----------------- ACTION METHODS ----------------- */
+
+    /** Hover over an element using Actions. */
+    public static void hoverElement(WebDriver driver, WebElement element) {
+        try {
+            new Actions(driver)
+                .moveToElement(element)
+                .perform();
+            waitFor(200);
+        } catch (Exception e) {
+            Logger.info("Hover failed: " + e.getMessage());
+        }
+    }
+
+    /** Hover over an element with custom pause duration. */
+    public static void hoverElement(WebDriver driver, WebElement element, int pauseMs) {
+        try {
+            new Actions(driver)
+                .moveToElement(element)
+                .pause(Duration.ofMillis(pauseMs))
+                .perform();
+            humanPause();
+        } catch (Exception e) {
+            Logger.info("Hover failed: " + e.getMessage());
+        }
+    }
+
+    /** Send keys to an element using Actions (hover, click, then type). */
+    public static void sendKeysWithActions(WebDriver driver, WebElement element, String text) {
+        new Actions(driver)
+            .moveToElement(element)
+            .click()
+            .sendKeys(text)
+            .perform();
+        waitFor(500);
+    }
+
+    /** Click element using Actions. */
+    public static void clickWithActions(WebDriver driver, WebElement element) {
+        new Actions(driver)
+            .click(element)
+            .perform();
+        waitFor(300);
+    }
+
+    /** Clear and send keys to an element with JavaScript scroll. */
+    public static void clearAndSendKeys(WebDriver driver, WebElement element, String text) {
+        try {
+            ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].scrollIntoView({block:'center'});", element);
+            waitFor(500);
+            element.clear();
+            element.sendKeys(text);
+            waitFor(500);
+        } catch (Exception e) {
+            Logger.info("Clear and send keys failed: " + e.getMessage());
+        }
+    }
+
+    /** Switch to a new window/tab that wasn't in the beforeHandles set. */
+    public static void switchToNewWindow(WebDriver driver, java.util.Set<String> beforeHandles) {
+        java.util.Set<String> afterHandles = driver.getWindowHandles();
+        for (String handle : afterHandles) {
+            if (!beforeHandles.contains(handle)) {
+                driver.switchTo().window(handle);
+                break;
+            }
+        }
+    }
+
+    /** Scroll to bottom of page using JavaScript. */
+    public static void scrollToBottom(WebDriver driver) {
+        ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
+    }
+
+    /** Wait until either a new window opens or URL changes. */
+    public static void waitForNewWindowOrUrlChange(WebDriver driver, java.util.Set<String> beforeHandles, 
+                                                    String beforeUrl, long timeoutSec) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSec));
+        wait.until(d -> d.getWindowHandles().size() > beforeHandles.size() 
+                        || !d.getCurrentUrl().equals(beforeUrl));
     }
 }

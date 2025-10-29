@@ -44,4 +44,3 @@ public class MainPage extends BasePage {
     }
 }
 
-//*[@id="navbarNavDropdown"]//li[@class='nav-item dropdown']//a[@id='navbarDropdownMenuLink' and contains(normalize-space(.),'Company')]//div[@class='dropdown-menu new-menu-dropdown-layout-6']//div[@class='new-menu-dropdown-layout-6-mid-container']

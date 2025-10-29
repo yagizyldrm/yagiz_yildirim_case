@@ -122,29 +122,29 @@ public final class ScrollUtils {
     public static WebElement findElementByScrolling(WebDriver driver, By locator, int scrollStep, int maxAttempts) {
         for (int i = 0; i < maxAttempts; i++) {
             try {
-                // Element var mı kontrol et
+                // Check if element exists
                 WebElement element = driver.findElement(locator);
                 if (element.isDisplayed()) {
-                    return element; // Element bulundu!
+                    return element; // Element found!
                 }
             } catch (NoSuchElementException e) {
-                // Element bulunamadı, scroll yap
+                // Element not found, scroll
             }
             
-            // Smooth scroll - küçük adımlarla
-            int smallStep = scrollStep / 4; // 500px yerine 125px
+            // Smooth scroll - in small steps
+            int smallStep = scrollStep / 4; // 125px instead of 500px
             for (int j = 0; j < 4; j++) {
                 ((JavascriptExecutor) driver).executeScript("window.scrollBy({top: " + smallStep + ", behavior: 'smooth'});");
                 try { Thread.sleep(100); } catch (InterruptedException ignored) {}
             }
             
-            // Sayfa sonuna geldik mi kontrol et
+            // Check if we reached page bottom
             Long scrollHeight = (Long) ((JavascriptExecutor) driver).executeScript("return document.body.scrollHeight;");
             Long scrollTop = (Long) ((JavascriptExecutor) driver).executeScript("return window.pageYOffset;");
             Long windowHeight = (Long) ((JavascriptExecutor) driver).executeScript("return window.innerHeight;");
             
             if (scrollTop + windowHeight >= scrollHeight) {
-                // Sayfa sonuna geldik, element bulunamadı
+                // Reached page bottom, element not found
                 throw new NoSuchElementException("Element not found after scrolling to bottom of page");
             }
         }
