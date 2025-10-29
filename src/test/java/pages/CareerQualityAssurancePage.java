@@ -8,7 +8,7 @@ public class CareerQualityAssurancePage extends BasePage {
     /** QA careers landing page URL. */
     public String careerQualityAssurancePageUrl = "https://useinsider.com/careers/quality-assurance/";
     /** 'See all QA jobs' navigation button. */
-    public By seeAllJobsButton = By.xpath("//*[@class='button-group d-flex flex-row']//a[@class='btn btn-outline-secondary rounded text-medium mt-2 py-3 px-lg-5 w-100 w-md-50' and contains(normalize-space(.),'See all QA jobs')]");
+    public By seeAllJobsButton = By.xpath("//a[contains(@class,'btn') and contains(text(),'See all QA jobs')]");
 
     /** Open page by URL using BasePage helper. */
     public void openPageByUrl(String url) {

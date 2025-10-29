@@ -8,15 +8,15 @@ public class MainPage extends BasePage {
     /** Insider homepage URL. */
     public String insiderHomePageUrl = "https://useinsider.com/";
     /** Insider logo image in navbar (homepage link). */
-    public By insiderLogo = By.xpath("//*[@class='navbar-brand d-flex flex-row align-items-center' and @aria-label='Home']/img");
+    public By insiderLogo = By.xpath("//a[contains(@class,'navbar-brand')]/img");
     /** Footer AI-native tagline label. */
-    public By aiNativeLabel = By.xpath("//*[@class='col-8 col-md-8 footer_company_tagline' and contains(normalize-space(.),'AI-native')]");
+    public By aiNativeLabel = By.xpath("//*[@id='footer']//*[contains(text(),'AI-native')]");
     /** Cookie accept button in consent banner. */
-    public By cookieAcceptButton = By.xpath("//*[@id='wt-cli-accept-all-btn']");
+    public By cookieAcceptButton = By.id("wt-cli-accept-all-btn");
     /** Top navigation 'Company' menu link. */
-    public By companyLabel = By.xpath("//li[@class='nav-item dropdown']//a[@class='nav-link dropdown-toggle hide-after' and normalize-space(text()) = 'Company']");
+    public By companyLabel = By.xpath("//a[contains(@class,'nav-link') and contains(text(),'Company')]");
     /** 'Careers' submenu link under Company. */
-    public By careersLabel = By.xpath("//*[@class='new-menu-dropdown-layout-6-mid-container']//a[@class='dropdown-sub' and contains(normalize-space(.),'Careers')]");
+    public By careersLabel = By.xpath("//a[@class='dropdown-sub' and contains(text(),'Careers')]");
 
     /** Open page by URL using BasePage helper. */
     public void openPageByUrl(String url) {

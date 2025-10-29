@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 /** Page Object for the job application page after clicking View Role. */
 public class ViewJobPage extends BasePage {
     /** Apply for this job button locator. */
-    public By applyForThisJobButton = By.xpath("//*[@class='postings-btn-wrapper']//a[@class='postings-btn template-btn-submit shamrock' and contains(normalize-space(.), 'Apply for this job')]");
+    public By applyForThisJobButton = By.xpath("//div[contains(@class,'postings-btn-wrapper')]//a[contains(@class,'postings-btn') and contains(text(),'Apply for this job')]");
 
     /** Open page by URL using BasePage helper. */
     public void openPageByUrl(String url) {

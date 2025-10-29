@@ -8,9 +8,9 @@ public class CareersPage extends BasePage {
     /** Careers page URL. */
     public String careersUrl = "https://useinsider.com/careers/";
     /** Team section container. */
-    public By teamBlockElement = By.xpath("//*[@id='career-find-our-calling']/div//div[@class='row']");
+    public By teamBlockElement = By.xpath("(//div[contains(@class,'job-item')])[1]");
     /** Location slider list. */
-    public By locationBlockElement = By.xpath("//*[@id='location-slider']/div//ul[@class='glide__slides']");
+    public By locationBlockElement = By.xpath("//div[@id='location-slider']//ul[@class='glide__slides']");
     /** Life at Insider carousel wrapper. */
     public By lifeAtInsiderBlockElement = By.xpath("//div[contains(@class,'elementor-swiper')]//div[contains(@class,'swiper-wrapper')]");
 
