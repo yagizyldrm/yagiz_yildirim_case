@@ -39,5 +39,6 @@ Insider Bonus Case
 * Click See All Jobs Button and Verify Navigation
 * Select Istanbul, Turkiye on Location Dropdown
 * Select Quality Assurance on Department Dropdown
+* Verify the List items contain Quality Assurance and Istanbul, Turkiye values
 * BONUS Click View Role Button and Verify redirection to View Role Page
 * BONUS Verify Application Form Page Navigation and Fill the Form
