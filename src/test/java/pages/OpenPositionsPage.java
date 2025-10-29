@@ -20,20 +20,15 @@ public class OpenPositionsPage extends BasePage {
     /** Department option items (used to match Quality Assurance). */
     public By departmentValue = By.xpath("//ul[@id='select2-filter-by-department-results']//li[@role='option']");
     /** Filtered job item container list. */
-    public By filtredListItem = By.xpath("//*[@id='jobs-list']/div");
+    public By filteredListItem = By.xpath("//*[@id='jobs-list']/div");
     /** Department label inside a filtered job item. */
-    public By filtredItemDepartment = By.xpath(".//span[contains(@class,'position-department')]");
+    public By filteredItemDepartment = By.xpath(".//span[contains(@class,'position-department')]");
     /** Location label inside a filtered job item. */
-    public By filtredItemLocation = By.xpath(".//div[contains(@class,'position-location')]");
+    public By filteredItemLocation = By.xpath(".//div[contains(@class,'position-location')]");
     /** 'View Role' button for a filtered job item. */
     public By viewRoleButton = By.xpath(".//a[contains(text(),'View Role')]");
     /** Job title element used to hover the first filtered role. */
-    public By filtredListItemJobTitle = By.xpath("//div[contains(@class,'position-list-item-wrapper')]//p[contains(@class,'position-title')]");
-
-    /** Open page by URL using BasePage helper. */
-    public void openPageByUrl(String url) {
-        super.open(url);
-    }
+    public By filteredListItemJobTitle = By.xpath("//div[contains(@class,'position-list-item-wrapper')]//p[contains(@class,'position-title')]");
     
     /** Get current URL using BasePage helper. */
     public String getCurrentUrl() {

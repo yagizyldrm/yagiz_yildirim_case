@@ -20,7 +20,6 @@ import com.thoughtworks.gauge.Logger;
 
 /**
  * Gauge step definitions that drive the Insider careers QA scenario.
- *
  * The steps use Page Object classes in the `pages` package and utility helpers
  * in the `utils` package to perform high-level user actions:
  * - Navigate to Insider homepage and validate key UI elements
@@ -31,12 +30,12 @@ import com.thoughtworks.gauge.Logger;
  */
 public class StepImplementation {
     private final WebDriver driver;
-    private MainPage mainPage;
-    private CareersPage careersPage;
-    private CareerQualityAssurancePage careerQualityAssurancePage;
-    private OpenPositionsPage openPositionsPage;
-    private ViewJobPage viewJobPage;
-    private ApplicationFormPage applicationFormPage;
+    private final MainPage mainPage;
+    private final CareersPage careersPage;
+    private final CareerQualityAssurancePage careerQualityAssurancePage;
+    private final OpenPositionsPage openPositionsPage;
+    private final ViewJobPage viewJobPage;
+    private final ApplicationFormPage applicationFormPage;
     public StepImplementation (){
         this.driver = DriverFactory.getDriver();
         this.mainPage = new MainPage();
@@ -166,13 +165,6 @@ public class StepImplementation {
                 .as("Life At Insider is not visible after smooth scroll").isTrue();
     }
 
-    /** Utility wait step for a given number of seconds. */
-    @Step("Wait <seconds> seconds")
-    public void waitTwoSeconds(int seconds) {
-        Logger.info(seconds + " seconds waiting");
-        ElementUtils.waitFor(seconds * 1000);
-    }
-
     /** Navigate directly to the QA careers landing page and verify URL. */
     @Step("Go to Career Quality Assurance Page")
     public void goToCareerQualityAssurancePage() {
@@ -191,7 +183,7 @@ public class StepImplementation {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
             careerQualityAssurancePage.click(careerQualityAssurancePage.seeAllJobsButton);
-        } catch (Exception e) {
+        } catch (TimeoutException | NoSuchElementException e) {
             org.assertj.core.api.Assertions.fail(
                     "'See All Jobs' button could not be clicked.", e);
         }
@@ -225,7 +217,7 @@ public class StepImplementation {
         openPositionsPage.waitForAjax(15);
         openPositionsPage.waitForPageReady(15);
         try {
-            String dept = driver.findElement(openPositionsPage.filtredItemDepartment).getText().trim();
+            String dept = driver.findElement(openPositionsPage.filteredItemDepartment).getText().trim();
             if (dept.toLowerCase(java.util.Locale.ROOT).contains("quality assurance")) {
                 Logger.info("Department already 'Quality Assurance' (pre-applied by page). Skipping re-select.");
                 return;
@@ -245,7 +237,7 @@ public class StepImplementation {
     /** Assert each listed position includes 'Quality Assurance' and 'Istanbul, Turkiye'. */
     @Step("Verify the List items contain Quality Assurance and Istanbul, Turkiye values")
     public void verifyListItemContainSelectedValues() {
-        By listItem = openPositionsPage.filtredListItem;
+        By listItem = openPositionsPage.filteredListItem;
         java.util.List<WebElement> items = driver.findElements(listItem);
         if (items.isEmpty()) {
             Logger.info("List is created according to selections but no data is available at this moment.");
@@ -274,8 +266,8 @@ public class StepImplementation {
             WebElement department;
             WebElement location;
             try {
-                department = list.findElement(openPositionsPage.filtredItemDepartment);
-                location   = list.findElement(openPositionsPage.filtredItemLocation);
+                department = list.findElement(openPositionsPage.filteredItemDepartment);
+                location   = list.findElement(openPositionsPage.filteredItemLocation);
 
                 smallWait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf(department));
                 smallWait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf(location));
@@ -290,8 +282,8 @@ public class StepImplementation {
                 ElementUtils.hoverElement(driver, list, 200);
                 ElementUtils.waitFor(300);
 
-                department = list.findElement(openPositionsPage.filtredItemDepartment);
-                location   = list.findElement(openPositionsPage.filtredItemLocation);
+                department = list.findElement(openPositionsPage.filteredItemDepartment);
+                location   = list.findElement(openPositionsPage.filteredItemLocation);
                 smallWait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf(department));
                 smallWait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf(location));
             }
@@ -314,7 +306,7 @@ public class StepImplementation {
     @Step("Click View Role Button and Verify redirection to Application Form Page")
     public void clickViewRoleButtonAndVerifyRedirection() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement ListItemTitle = wait.until(ExpectedConditions.presenceOfElementLocated(openPositionsPage.filtredListItemJobTitle));
+        WebElement ListItemTitle = wait.until(ExpectedConditions.presenceOfElementLocated(openPositionsPage.filteredListItemJobTitle));
         ElementUtils.hoverElement(driver, ListItemTitle);
         ElementUtils.waitFor(1000);
         
@@ -353,7 +345,7 @@ public class StepImplementation {
     @Step("BONUS Click View Role Button and Verify redirection to View Role Page")
     public void clickViewRoleButtonAndVerifyRedirectionViewRolePage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement ListItemTitle = wait.until(ExpectedConditions.presenceOfElementLocated(openPositionsPage.filtredListItemJobTitle));
+        WebElement ListItemTitle = wait.until(ExpectedConditions.presenceOfElementLocated(openPositionsPage.filteredListItemJobTitle));
         ElementUtils.hoverElement(driver, ListItemTitle);
         ElementUtils.waitFor(1000);
         
@@ -398,7 +390,7 @@ public class StepImplementation {
                 .as("Application Form Page navigation failed - required form elements not visible")
                 .isTrue();
                 
-        } catch (Exception e) {
+        } catch (TimeoutException | NoSuchElementException e) {
             Assertions.fail("Application Form Page navigation failed - required form elements not visible: " + e.getMessage());
         }
 
