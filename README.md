@@ -101,7 +101,7 @@ mvn gauge:execute -DspecName="example.spec" -Dscenario="Insider Case"
 
 ### **Advanced Capabilities**
 - 🔄 **Window/tab handling** for new pages
-- 📝 **Form filling** with validation
+- 📝 **Form Input Automation**
 - 🎯 **Element finding by scrolling**
 - ⚡ **Retry mechanisms** for flaky elements
 - 📊 **Comprehensive HTML reports**
