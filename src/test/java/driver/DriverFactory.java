@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import utils.ConfigReader;
+import java.time.Duration;
 
 /** WebDriver factory resolving browser from config/env/system and managing lifecycle. */
 public class DriverFactory {
@@ -33,6 +34,12 @@ public class DriverFactory {
                     firefoxOptions.addArguments("--kiosk");
                     firefoxOptions.addArguments("--disable-notifications");
                     driver = new FirefoxDriver(firefoxOptions);
+                    // implicit wait
+                    driver.manage()
+                            .timeouts()
+                            .implicitlyWait(Duration.ofSeconds(
+                                    ConfigReader.getIntProperty("implicit.wait.seconds", 3)
+                            ));
                     break;
 
                 case "chrome":
@@ -50,6 +57,12 @@ public class DriverFactory {
                     chromeOptions.addArguments("--start-maximized");
                     chromeOptions.addArguments("--disable-notifications");
                     driver = new ChromeDriver(chromeOptions);
+                    // implicit wait
+                    driver.manage()
+                            .timeouts()
+                            .implicitlyWait(Duration.ofSeconds(
+                                    ConfigReader.getIntProperty("implicit.wait.seconds", 3)
+                            ));
                     break;
             }
         }

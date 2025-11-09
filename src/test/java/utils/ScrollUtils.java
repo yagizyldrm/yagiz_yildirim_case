@@ -129,6 +129,7 @@ public final class ScrollUtils {
                 }
             } catch (NoSuchElementException e) {
                 // Element not found, scroll
+                driver.manage().timeouts().implicitlyWait(Duration.ZERO);
             }
             
             // Smooth scroll - in small steps
