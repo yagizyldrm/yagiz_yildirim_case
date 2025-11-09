@@ -38,7 +38,7 @@ public class DriverFactory {
                     driver.manage()
                             .timeouts()
                             .implicitlyWait(Duration.ofSeconds(
-                                    ConfigReader.getIntProperty("implicit.wait.seconds", 3)
+                                    ConfigReader.getIntProperty("implicit.wait.seconds", 4)
                             ));
                     break;
 
@@ -61,7 +61,7 @@ public class DriverFactory {
                     driver.manage()
                             .timeouts()
                             .implicitlyWait(Duration.ofSeconds(
-                                    ConfigReader.getIntProperty("implicit.wait.seconds", 3)
+                                    ConfigReader.getIntProperty("implicit.wait.seconds", 4)
                             ));
                     break;
             }
