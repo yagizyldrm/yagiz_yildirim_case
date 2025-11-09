@@ -40,9 +40,9 @@ public final class ElementUtils {
             return description;
         }
     }
-    private static boolean SLOW_MODE = true;         // enable/disable slow-mode pacing
-    private static int HUMAN_MIN_MS = 500;           // min pause after actions
-    private static int HUMAN_MAX_MS = 1000;           // max pause after actions
+    private static final boolean SLOW_MODE = true;         // enable/disable slow-mode pacing
+    private static final int HUMAN_MIN_MS = 500;           // min pause after actions
+    private static final int HUMAN_MAX_MS = 1000;           // max pause after actions
 
     private static void humanPause() {
         if (!SLOW_MODE) return;

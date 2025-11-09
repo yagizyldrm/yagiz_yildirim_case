@@ -7,7 +7,6 @@ import java.util.Properties;
 /**
  * Configuration reader for test settings.
  * Reads from config.properties with fallback to system properties and environment variables.
- * 
  * Priority order:
  * 1. config.properties file
  * 2. System property (-Dkey=value)
