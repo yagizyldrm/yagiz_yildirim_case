@@ -68,8 +68,8 @@ public class StepImplementation {
         ElementUtils.scrollToBottom(driver);
         ElementUtils.waitFor(2000);
         
-        WebElement insiderRightsLabelExist = mainPage.waitVisible(mainPage.aiNativeLabel);
-        Assertions.assertThat(insiderRightsLabelExist.isDisplayed())
+        WebElement insiderAiLabelExist = mainPage.waitVisible(mainPage.aiNativeLabel);
+        Assertions.assertThat(insiderAiLabelExist.isDisplayed())
                 .as("Insider Ai Native Label Doesn't Exist on Footer").isTrue();
     }
 
@@ -110,7 +110,7 @@ public class StepImplementation {
     @Step("Hover Company Menu and Click Careers and Verify Navigation to Careers Page")
     public void hoverCompanyMenuAndClickCareers() {
         WebElement companyLabelItem = mainPage.waitVisible(mainPage.companyLabel);
-        ElementUtils.hoverElement(driver, companyLabelItem);
+        ElementUtils.hoverElementWithActions(driver, companyLabelItem);
         ElementUtils.waitFor(WaitTime.MEDIUM);
         
         mainPage.waitClickable(mainPage.careersLabel);
@@ -259,7 +259,7 @@ public class StepImplementation {
             try {
                 js.executeScript("arguments[0].scrollIntoView({block:'center'});", list);
             } catch (Exception ignored) {}
-            ElementUtils.hoverElement(driver, list, 200);
+            ElementUtils.hoverElementWithActionsAndHumanPause(driver, list, 200);
             ElementUtils.waitFor(300);
 
             // Retry once on stale for relative locators inside item
@@ -279,7 +279,7 @@ public class StepImplementation {
                 try {
                     js.executeScript("arguments[0].scrollIntoView({block:'center', inline:'nearest'});", list);
                 } catch (Exception ignored) {}
-                ElementUtils.hoverElement(driver, list, 200);
+                ElementUtils.hoverElementWithActionsAndHumanPause(driver, list, 200);
                 ElementUtils.waitFor(300);
 
                 department = list.findElement(openPositionsPage.filteredItemDepartment);
@@ -307,7 +307,7 @@ public class StepImplementation {
     public void clickViewRoleButtonAndVerifyRedirection() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement ListItemTitle = wait.until(ExpectedConditions.presenceOfElementLocated(openPositionsPage.filteredListItemJobTitle));
-        ElementUtils.hoverElement(driver, ListItemTitle);
+        viewJobPage.hoverWithActions(ListItemTitle);
         ElementUtils.waitFor(1000);
         
         String beforeClickUrl = driver.getCurrentUrl();
@@ -322,8 +322,8 @@ public class StepImplementation {
             ElementUtils.switchToNewWindow(driver, beforeHandles);
         }
         
-        ElementUtils.waitForPageToBeReady(driver, 15);
-        ElementUtils.waitForAjaxToFinish(driver, 15);
+        viewJobPage.waitForPageReady(15);
+        viewJobPage.waitForAjax(15);
         
         try {
             WebElement submitButton = ScrollUtils.findElementByScrolling(
@@ -346,7 +346,7 @@ public class StepImplementation {
     public void clickViewRoleButtonAndVerifyRedirectionViewRolePage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement ListItemTitle = wait.until(ExpectedConditions.presenceOfElementLocated(openPositionsPage.filteredListItemJobTitle));
-        ElementUtils.hoverElement(driver, ListItemTitle);
+        ElementUtils.hoverElementWithActions(driver, ListItemTitle);
         ElementUtils.waitFor(1000);
         
         String beforeClickUrl = driver.getCurrentUrl();
@@ -373,7 +373,7 @@ public class StepImplementation {
     public void verifyApplicationFormPageNavigationAndFillTheForm() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement applyForThisJobButton = wait.until(ExpectedConditions.visibilityOfElementLocated(viewJobPage.applyForThisJobButton));
-        ElementUtils.hoverElement(driver, applyForThisJobButton);
+        ElementUtils.hoverElementWithActions(driver, applyForThisJobButton);
         ElementUtils.clickWithActions(driver, applyForThisJobButton);
 
         ElementUtils.waitForPageToBeReady(driver, 15);

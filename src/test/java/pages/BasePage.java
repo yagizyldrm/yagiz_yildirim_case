@@ -86,4 +86,11 @@ public abstract class BasePage {
     protected void click(WebElement element) {
         ElementUtils.click(driver, element);
     }
+
+    /** Hover WebElement with Actions. */
+    protected void hoverWithActions(WebElement element){ElementUtils.hoverElementWithActions(driver, element);}
+
+    /** Hover WebElement with Actions including Human Pause. */
+    protected void hoverWithActionsAndHumanPause(WebElement element, int pauseMs){ElementUtils.hoverElementWithActionsAndHumanPause(driver, element, pauseMs);}
+
 }

@@ -284,7 +284,7 @@ public final class ElementUtils {
     /* ----------------- ACTION METHODS ----------------- */
 
     /** Hover over an element using Actions. */
-    public static void hoverElement(WebDriver driver, WebElement element) {
+    public static void hoverElementWithActions(WebDriver driver, WebElement element) {
         try {
             new Actions(driver)
                 .moveToElement(element)
@@ -296,7 +296,7 @@ public final class ElementUtils {
     }
 
     /** Hover over an element with custom pause duration. */
-    public static void hoverElement(WebDriver driver, WebElement element, int pauseMs) {
+    public static void hoverElementWithActionsAndHumanPause(WebDriver driver, WebElement element, int pauseMs) {
         try {
             new Actions(driver)
                 .moveToElement(element)

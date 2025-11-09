@@ -42,5 +42,11 @@ public class MainPage extends BasePage {
     public void click(By locator) {
         super.click(locator);
     }
+
+    /** Hover WebElement with Actions using BasePage helper. */
+    public void hoverWithActions(WebElement element){ super.hoverWithActions(element);}
+
+    /** Hover WebElement with Actions including Human Pause using BasePage helper. */
+    public void hoverWithActionsAndHumanPause(WebElement element,int pauseMs) {super.hoverWithActionsAndHumanPause(element,pauseMs);}
 }
 

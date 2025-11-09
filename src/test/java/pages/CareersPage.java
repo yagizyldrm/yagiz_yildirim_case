@@ -48,4 +48,10 @@ public class CareersPage extends BasePage {
     public void waitForAjax(int timeoutSec) {
         super.waitForAjax(timeoutSec);
     }
+
+    /** Hover WebElement with Actions using BasePage helper. */
+    public void hoverWithActions(WebElement element){ super.hoverWithActions(element);}
+
+    /** Hover WebElement with Actions including Human Pause using BasePage helper. */
+    public void hoverWithActionsAndHumanPause(WebElement element,int pauseMs) {super.hoverWithActionsAndHumanPause(element,pauseMs);}
 }

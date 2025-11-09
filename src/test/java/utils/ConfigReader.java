@@ -29,11 +29,11 @@ public class ConfigReader {
      */
     private static void loadProperties() {
         try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
-            if (input != null) {
-                properties.load(input);
-            } else {
+            if(input == null){
                 System.err.println("Warning: " + CONFIG_FILE + " not found in classpath. Using defaults.");
+                return;
             }
+            properties.load(input);
         } catch (IOException e) {
             System.err.println("Error loading " + CONFIG_FILE + ": " + e.getMessage());
         }
